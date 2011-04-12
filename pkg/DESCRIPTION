@@ -1,0 +1,9 @@
+Package: plagrowanalysis
+Type: Package
+Title: Analyse Plant Growth Data
+Version: 0.1-0
+Date: 2011-04-12
+Author: Luciano Selzer
+Maintainer: Luciano Selzer <luciano.selzer@gmail.com>
+Description: Convert biomass and leaf area data to growth parameters: Relative Growth Rate, Unity Leaf Rate, Shoot-Root Allometry, etc.
+License: GPL
