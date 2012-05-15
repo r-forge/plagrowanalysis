@@ -8,13 +8,17 @@
  Creates a character vector containing the time span between times.
 }
 \usage{
-make_periods(times)
+make_periods(times, first_date = FALSE)
 }
 
 \arguments{
   \item{times}{
  a numeric vector.
 }
+  \item{first_date}{
+    A logic value. \code{TRUE} uses the first date for the calculation. 
+    Defaults to \code{FALSE}.
+  }
 }
 
 \value{

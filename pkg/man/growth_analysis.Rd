@@ -16,13 +16,13 @@
 }
 \usage{
   growth_analysis(time, root, leaf, non.leaf, leaf.area, total, data, 
-    units = NULL)
-  RGR_analysis(time, total, data, units = NULL)
-  ULR_analysis(time, total, leaf.area, data, units = NULL)
-  LAR_analysis(time, total, leaf.area, data, units = NULL)
-  LWR_analysis(time, total, leaf, data, units = NULL)
-  LSA_analysis(time, leaf, leaf.area, data, units = NULL)
-  RSA_analysis(time, root, leaf, non.leaf, data, units = NULL)
+    units = NULL, first_date = FALSE)
+  RGR_analysis(time, total, data, units = NULL, first_date = FALSE)
+  ULR_analysis(time, total, leaf.area, data, units = NULL, first_date = FALSE)
+  LAR_analysis(time, total, leaf.area, data, units = NULL, first_date = FALSE)
+  LWR_analysis(time, total, leaf, data, units = NULL, first_date = FALSE)
+  LSA_analysis(time, leaf, leaf.area, data, units = NULL, first_date = FALSE)
+  RSA_analysis(time, root, leaf, non.leaf, data, units = NULL, first_date = FALSE)
 }
 %- maybe also 'usage' for other objects documented here.
 \arguments{
@@ -53,6 +53,10 @@
       in which the data is and the desired units. See \link{area_conv}
       for more info.
 }
+  \item{first_date}{
+    A logic value. \code{TRUE} uses the first date for the calculation. 
+    Defaults to \code{FALSE}.
+  }
 }
 \details{
  These functions calculate different growth parameters. \code{growth_analysis}

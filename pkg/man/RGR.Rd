@@ -13,17 +13,17 @@
  This set of function are the workhorse to calculate different growth parameters:   Relative Growth Rate, Unity leaf Rate, leaf Area Rate, leaf Specific Area, leaf Weight Ratio, Root - Shoot Allometry
 }
 \usage{
-RGR(W1, W2, T1, T2)
+RGR(W1, W2, T1, T2, first_date = FALSE)
 
-ULR(W1, W2, L1, L2, T1, T2)
+ULR(W1, W2, L1, L2, T1, T2, first_date = FALSE)
 
-LAR(W1, W2, L1, L2)
+LAR(W1, W2, L1, L2, first_date = FALSE)
 
-LSA(L1, L2, LW1, LW2)
+LSA(L1, L2, LW1, LW2, first_date = FALSE)
 
-LWR(W1, W2, LW1, LW2)
+LWR(W1, W2, LW1, LW2, first_date = FALSE)
 
-RSA(R1, R2, LW1, LW2, S1, S2)
+RSA(R1, R2, LW1, LW2, S1, S2, first_date = FALSE)
 }
 %- maybe also 'usage' for other objects documented here.
 \arguments{
@@ -63,6 +63,10 @@ RSA(R1, R2, LW1, LW2, S1, S2)
   \item{S2}{
  Shoot weight at time 2.
 }
+  \item{first_date}{
+    A logic value. \code{TRUE} uses the first date for the calculation. 
+    Defaults to \code{FALSE}.
+  }
 }
 \details{
  This set of functions are internal are not meant

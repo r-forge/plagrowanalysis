@@ -50,7 +50,7 @@ function(R1, R2, LW1, LW2, S1, S2){
   ans
 }
 
-RSA_analysis <- function(time, root, leaf, non.leaf, data, units = NULL) {
+RSA_analysis <- function(time, root, leaf, non.leaf, data, units = NULL, first_date = FALSE) {
 
   if (is.null(data$time))  stop("Times not supplied")
    #Creo un data.frame para que se m?s comodo la asignaci?n de cosas  
@@ -59,17 +59,32 @@ RSA_analysis <- function(time, root, leaf, non.leaf, data, units = NULL) {
 
   #Cuantos tiempos hay
   times <- unique(gdata$time)
+  
+  #Divido el dataframe en tiempos para no volver a tener que subsetear en cada paso
+  ldata <- split(gdata, gdata$time)
+  
   #Listas para guardar resultados
-  periods <- make_periods(times)
+  periods <- make_periods(times, first_date = first_date)
   
   ans <- vector("list", length(times) - 1)
   names(ans) <- periods
+  
   #Loop desde tiempo uno a tmax-1
   #donde subseteo los datos segun el tiempo y aplico las funciones
-  for(i in seq_along(ans)) {
-    d1 <- subset(gdata, gdata$time==times[i])
-    d2 <- subset(gdata, gdata$time==times[i+1])
-    ans[[i]] <-  RSA(d1$root, d2$root, d1$leaf, d2$leaf, d1$non.leaf, d2$non.leaf)
+  #Elegir con la primer fecha versus todas
+  #o el comporatmiento normal
+  if(first_date){
+    for(i in seq_len(length(ldata)-1)) {
+      ans[[i]] <- RSA(ldata[[1]]$root, ldata[[i+1]]$root, 
+                      ldata[[1]]$leaf, ldata[[i+1]]$leaf, 
+                      ldata[[1]]$non.leaf, ldata[[i+1]]$non.leaf)
+      }
+  } else {
+    for(i in seq_len(length(ldata)-1)) {
+      ans[[i]] <- RSA(ldata[[i]]$root, ldata[[i+1]]$root, 
+                      ldata[[i]]$leaf, ldata[[i+1]]$leaf,
+                      ldata[[i]]$non.leaf, ldata[[i+1]]$non.leaf)
+      }
   }
 
   #Uno las listas en vectores, m?s comodo si hay que transformar y da una salida m?s compacta

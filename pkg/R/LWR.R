@@ -20,7 +20,7 @@ function(W1, W2, LW1, LW2){
   ans
 }
 
-LWR_analysis <- function(time, total, leaf, data, units = NULL) {
+LWR_analysis <- function(time, total, leaf, data, units = NULL, first_date = FALSE) {
    if (is.null(data$time))  stop("Times not supplied")
    #Creo un data.frame para que se m?s comodo la asignaci?n de cosas  
   gdata <- data.frame(time = data$time, total = data$total,
@@ -28,18 +28,29 @@ LWR_analysis <- function(time, total, leaf, data, units = NULL) {
 
   #Cuantos tiempos hay
   times <- unique(gdata$time)
-  #Listas para guardar resultados
-  periods <- make_periods(times)
-  
-  ans <- vector("list", length(times) - 1)
-  names(ans) <- periods
-  #Loop desde tiempo uno a tmax-1
-  #donde subseteo los datos segun el tiempo y aplico las funciones
-  for(i in seq_along(ans)) {
-    d1 <- subset(gdata, gdata$time==times[i])
-    d2 <- subset(gdata, gdata$time==times[i+1])
-    ans[[i]] <- LWR(d1$total, d2$total, d1$leaf, d2$leaf)
-  }
+   
+   #Divido el dataframe en tiempos para no volver a tener que subsetear en cada paso
+   ldata <- split(gdata, gdata$time)
+   
+   #Listas para guardar resultados
+   periods <- make_periods(times, first_date = first_date)
+   
+   ans <- vector("list", length(times) - 1)
+   names(ans) <- periods
+   
+   #Loop desde tiempo uno a tmax-1
+   #donde subseteo los datos segun el tiempo y aplico las funciones
+   #Elegir con la primer fecha versus todas
+   #o el comporatmiento normal
+   if(first_date){
+     for(i in seq_len(length(ldata)-1)) {
+       ans[[i]] <- LWR(ldata[[1]]$total, ldata[[i+1]]$total, ldata[[1]]$leaf, ldata[[i+1]]$leaf)
+     }
+   } else {
+     for(i in seq_len(length(ldata)-1)) {
+       ans[[i]] <- LWR(ldata[[i]]$total, ldata[[i+1]]$total, ldata[[i]]$leaf, ldata[[i+1]]$leaf)    }
+   }
+
 
   #Uno las listas en vectores, m?s comodo si hay que transformar y da una salida m?s compacta
   ans <- do.call(rbind, ans)

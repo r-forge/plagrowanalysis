@@ -9,7 +9,7 @@ function(W1, W2, T1, T2) {
   ans
 }
 
-RGR_analysis <- function(time, total, data = data, units = NULL) {
+RGR_analysis <- function(time, total, data = data, units = NULL, first_date = FALSE) {
 
   if (is.null(data$time))  stop("Times not supplied")
    #Creo un data.frame para que se m?s comodo la asignaci?n de cosas  
@@ -17,19 +17,28 @@ RGR_analysis <- function(time, total, data = data, units = NULL) {
 
   #Cuantos tiempos hay
   times <- unique(gdata$time)
+  #Divido el dataframe en tiempos para no volver a tener que subsetear en cada paso
+  ldata <- split(gdata$total, gdata$time)
+  
   #Listas para guardar resultados
-  periods <- make_periods(times)
+  periods <- make_periods(times, first_date = first_date)
   
   ans <- vector("list", length(times) - 1)
   names(ans) <- periods
+  
   #Loop desde tiempo uno a tmax-1
   #donde subseteo los datos segun el tiempo y aplico las funciones
-  for(i in seq_along(ans)) {
-    d1 <- subset(gdata, gdata$time==times[i])
-    d2 <- subset(gdata, gdata$time==times[i+1])
-    ans[[i]] <- RGR(d1$total, d2$total, times[i], times[i+1])
+  #Elegir con la primer fecha versus todas
+  #o el comporatmiento normal
+  if(first_date){
+    for(i in seq_len(length(ldata)-1)) {
+      ans[[i]] <- RGR(ldata[[1]], ldata[[i+1]], as.numeric(names(ldata)[1]), as.numeric(names(ldata[i+1])))
+    }
+  } else {
+    for(i in seq_len(length(ldata)-1)) {
+      ans[[i]] <- RGR(ldata[[i]], ldata[[i+1]], as.numeric(names(ldata)[i]), as.numeric(names(ldata[i+1])))
+    }
   }
-
   #Uno las listas en vectores, m?s comodo si hay que transformar y da una salida m?s compacta
   ans <- do.call(rbind, ans)
   result <- list(ans = ans)
