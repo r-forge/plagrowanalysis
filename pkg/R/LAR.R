@@ -22,13 +22,22 @@ function(W1, W2, L1, L2){
 
 LAR_analysis <- function(time, total, leaf.area, data, units = NULL, first_date = FALSE) {
     
-  if (is.null(data$time))  stop("Times not supplied")
+  if (is.null(data[,time]) | (class(data[,time]) != "Date" & !is.numeric(data[,time]))){
+    stop("Times not supplied")
+  }
    #Creo un data.frame para que se m?s comodo la asignaci?n de cosas  
-  gdata <- data.frame(time = data$time, total = data$total,
-    leaf.area = data$leaf.area)
-
+  gdata <- data.frame(time = data[, time], total = data[, total],
+    leaf.area = data[, leaf.area])
+  gdata <- gdata[order(gdata$time),]
   #Cuantos tiempos hay
   times <- unique(gdata$time)
+
+  #Si esta en formato Date lo cambio a numerico para después poder sacar las
+  #diferencias de tiempo
+  if(class(gdata$time) == "Date"){
+    labs <- c(0, cumsum(as.numeric(diff(unique(gdata$time)))))
+    gdata$time <- as.numeric(as.character(factor(gdata$time, labels = labs)))
+  }
   
   #Divido el dataframe en tiempos para no volver a tener que subsetear en cada paso
   ldata <- split(gdata, gdata$time)
